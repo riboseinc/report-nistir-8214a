@@ -1,0 +1,13 @@
+= Comments in response to public comment period of Draft NISTIR 8214A
+:docnumber: 11021
+:published-date: 2020-02-10
+:status: published
+:doctype: whitepaper
+:imagesdir: images
+:docfile: nistir-8214a-comments.adoc
+:mn-document-class: rsd
+:mn-output-extensions: xml,html,doc,rxl
+:local-cache-only:
+:data-uri-image:
+
+...

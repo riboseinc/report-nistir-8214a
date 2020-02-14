@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
 gem "metanorma-cli"
+gem "metanorma-rsd"
 gem "relaton-cli"
 

@@ -1,4 +1,4 @@
-= Comments in response to public comment period of Draft NISTIR 8214A
+= Comments in response to public comment period of NISTIR 8214A
 :edition: 1.0
 :docnumber: 11021
 :published-date: 2020-02-10
@@ -15,30 +15,40 @@
 == Scope
 This document describes the open-source Confium trust store project and its alignment to the NIST Threshold Cryptography standardization process. A proposal of offering an open-source framework to support the standardization process is provided.
 
-
+[bibliography]
 == Normative references
-Draft NISTIR 8214A, Towards NIST Standards for Threshold Schemes for Cryptographic Primitives: A Preliminary Roadmap
+
+* [[[NISTIR_8214A,NISTIR 8214A (Draft)]]], _Towards NIST Standards for Threshold Schemes for Cryptographic Primitives: A Preliminary Roadmap_
 
 
 == Terms and definitions
-keystore:: component for storage and management of keys
 
-portable data [ISO/NP 8000-100:2020, in development]:: data conforms to applicable data specifications
+=== keystore
 
-RNP:: open-source OpenPGP library developed by Ribose
+component for storage and management of keys
 
-Enprot:: open-source secure document framework developed by Ribose
+=== portable data
+data conforms to applicable data specifications
+
+[.source]
+<<ISO_8000>>
+
+=== RNP
+open-source OpenPGP library developed by Ribose
+
+=== Enprot
+open-source secure document framework developed by Ribose
 
 
 == Practical usage of new cryptographic families
 
 === Background
 
-Traditional encryption and signature schemes have been in use for decades to protect end-to-end communication. Recent advancements in technology and the diversification of use cases have introduced more complex security problems, many of which rely on encryption and signature schemes with certain security properties. Traditional schemes are no longer enough to cater for all different scenarios. 
+Traditional encryption and signature schemes have been in use for decades to protect end-to-end communication. Recent advancements in technology and the diversification of use cases have introduced more complex security problems, many of which rely on encryption and signature schemes with certain security properties. Traditional schemes are no longer enough to cater for all different scenarios.
 
-New cryptographic schemes are developed to fill this gap. For instance, searchable encryption schemes <<chen-yang>> <<curmola-garay>> allow a (third-party) cloud server to perform (encrypted) keyword search on encrypted data. Distance-preserving encryption <<tex-scha>> supports data analysis (by third party service providers) on encrypted data. 
+New cryptographic schemes are developed to fill this gap. For instance, searchable encryption schemes <<chen-yang>> <<curmola-garay>> allow a (third-party) cloud server to perform (encrypted) keyword search on encrypted data. Distance-preserving encryption <<tex-scha>> supports data analysis (by third party service providers) on encrypted data.
 
-Threshold cryptography <<hazay-mikkelsen>> <<yan-lu-liu>> in particular, supports new modes of achieving security, as described in the Draft NISTIR 8214A, including cryptographic secure multi-factor authentication <<webster-pohja>>.
+Threshold cryptography <<hazay-mikkelsen>> <<yan-lu-liu>> in particular, supports new modes of achieving security, as described in the <<NISTIR_8214A>>, including cryptographic secure multi-factor authentication <<webster-pohja>>.
 
 === Key management
 Key management <<rafaeli-hutchison>> <<mazieres-kaminsky>> is a recurrent topic in cryptographic research. Previous works focus on encryption and signature schemes for simple communication between different parties. <<schwarz-long>> is a more recent work that develops a distributed cloud keystore. In this scheme, keys are divided into shares and the shares are stored by different cloud servers. As a result, no single cloud can see the actual keys, only the user able to collect all shares can recover the actual keys.
@@ -59,7 +69,7 @@ A simple application that demonstrates the value of threshold cryptography is mu
 . a one-time password (OTP) from the user's phone; and
 . the user's fingerprint.
 
-A user needs to provide any two of the above items to login the system. This can be done using threshold cryptography with t = 2 and n = 3.
+A user needs to provide any two of the above items to login the system. This can be done using threshold cryptography with stem:[t = 2] and stem:[n = 3].
 
 The advantages of such scheme are that:
 
@@ -90,17 +100,18 @@ For an application to utilize a new cryptographic scheme, short of directly impl
 . The (standardized) cryptographic scheme has been adopted by one or more standard cryptographic libraries, such as OpenSSL, LibreSSL, mbtls, BoringSSL. At this stage stakeholders of the scheme will have to contribute and implement this scheme for the major cryptographic libraries, each with different requirements, security implications and timelines. This stage is often a multi-year process.
 . The standard cryptographic library that implements the cryptographic scheme has been adopted by an operating system vendor or distributor, such as Apple, Microsoft, IBM and Oracle. There is a typical lag between step 2 and 3 of at least a year or more.
 
-These steps are mostly sequential – success in step 1 leads to step 2, etc. They lead to an adoption timeline, even if the cryptographic scheme and its use cases are fortunate enough to garner long-term and widespread support, of at least 5 years to over a decade in an optimistic sense.
+These steps are mostly sequential -- success in step 1 leads to step 2, etc. They lead to an adoption timeline, even in an optimistic sense if the cryptographic scheme and its use cases are fortunate enough to garner long-term and widespread support, of at least 5 years to over a decade.
 
 All of the above factors leading to the success of a cryptographic scheme are not directly linked to its purpose or technical merit, and are often completely out of the control of the creator and researchers of a cryptographic scheme. Herein lies the difficulty in incorporating threshold cryptography in real applications.
 
-For example, <<shoup>> developed a threshold signature scheme as an extension of the traditional RSA signature scheme, such that the signature is generated by multiple parties instead of one party. The method of signature verification is identical to traditional RSA, meaning that the verifier only needs to understand traditional RSA without the need to implement the scheme described in <<shoup>>.  An application that can practically adopt such threshold signature scheme is likely to be a decade out, even the its mechanisms are based on existing, widely available, cryptographic primitives. 
+[example]
+<<shoup>> developed a threshold signature scheme as an extension of the traditional RSA signature scheme, such that the signature is generated by multiple parties instead of one party. The method of signature verification is identical to traditional RSA, meaning that the verifier only needs to understand traditional RSA without the need to implement the scheme described in <<shoup>>. Applications that can practically adopt such threshold signature scheme are likely to be a decade out, even when the its mechanisms are based on existing, widely available, cryptographic primitives.
 
 
 ==== Secret storage management
-Keystores are essential in the operation of encryption and signature schemes as they rely on the protection of secrets. Every primitive may define new types of secrets with different key lengths, properties and operations. 
+Keystores are essential in the operation of encryption and signature schemes as they rely on the protection of secrets. Every primitive may define new types of secrets with different key lengths, properties and operations.
 
-Traditional keystores, such as Oracle JKS1, assume that individual cryptographic schemes are independent, and thus each cryptographic scheme is implemented as a separate module without being extensible. 
+Traditional keystores, such as Oracle JKS1, assume that individual cryptographic schemes are independent, and thus each cryptographic scheme is implemented as a separate module without being extensible.
 
 In addition, traditional keystores also rarely provide an interoperable way for others to obtain the generated public keys. The user application, and often the user of the application, has to resort to out-of-band mechanisms to obtain the public keys of others in order to import them into one's own keystore. This process is opaque to users of the applications, and may introduce more security issues (such as improper sharing of secrets) compared to the enhanced security provided by the adoption of such cryptographic scheme.
 
@@ -118,8 +129,7 @@ image::00-non-extensible.png[]
 
 Taking RNP as an example application that utilizes a trust store, the conventional architecture of having an application interface directly with the crypto-primitive layer, where the application handles trust management. Under this approach, nearly all responsibility of security lies with the application itself. In fact, this architecture binds the application developer to low-level cryptography, and results in an inflexible, fragile stack.
 
-
-[%unnumbered]
+.Conventional architecture with application embededing a trust store
 image::01-conventional-approach.png[]
 
 == Decoupling cryptographic primitives in trust stores
@@ -135,7 +145,7 @@ Traditional cross-platform trust stores are challenged in many ways, including:
 
 Confium aims to address these challenges into opportunities.
 
-===	Drivers for an extensible architecture
+=== Drivers for an extensible architecture
 There are several drivers in creating a trust store with an extensible architecture.
 
 . User responsibility. It is unfair to the application developer to manage low-level cryptographic mechanisms and keep them up to date all the time, often needing to fix source code due to changes in the underlying cryptographic library;
@@ -174,22 +184,23 @@ The design goals of the Confium trust store include:
 
 == The Confium trust store
 
-===	Purpose
+=== Purpose
 Confium is an extensible secure keystore framework for threshold cryptography and beyond. It aims to be an interoperable trust store, that is platform independent and relies on international standards to ensure its contents are portable.
 
 === Background
 Confium is an offshoot of RNP, an open-source, open-licensed (BSD) OpenPGP library and toolkit. Both Confium and RNP are developed by Ribose.
 
-RNP is designed to be a high-performance OpenPGP library, fully compliant to RFC 4880 and compatible with GnuPG. 
+RNP is designed to be a high-performance OpenPGP library, fully compliant to RFC 4880 and compatible with GnuPG.
 
 Its benefits have been well demonstrated by Mozilla's Thunderbird's decision of embedding RNP to power Thunderbird's email security capabilities, in order to support its client installations numbering over 20 million worldwide.
 
 === Structure
-====	Overview and diagram
-Confium provides a new keystore framework consisting of 3 layers: 
+
+==== Overview
+Confium provides a new keystore framework consisting of 3 layers:
 
 . the application layer
-. the crypto-primitive layer; and 
+. the crypto-primitive layer; and
 . the keystore layer.
 
 The architecture of the secure keystore framework is provided in <<fig-02-keystore-architecture>>.
@@ -202,7 +213,7 @@ image::02-keystore-architecture.png[]
 ==== Keystore layer
 The keystore layer is responsible for managing keys. There are two separate storage spaces at the keystore layer:
 
-. The private space is for holding private parameters, such as private keys. 
+. The private space is for holding private parameters, such as private keys.
 . The public space is for holding and broadcasting public parameters, such as public keys.
 
 ==== Crypto-primitive layer
@@ -210,14 +221,29 @@ The crypto-primitive layer contains a set of modules, each implementing an indiv
 
 The crypto-primitive layer is extensible through its "`plugin manager`", where third-party cryptographers (developers) could contribute modules implementing new cryptographic schemes, primitives and keystore mechanisms. These cryptographic plugins are meant to be publicly available and downloadable through a public cryptographic scheme repository.
 
-This layer supports threshold cryptography through the threshold cryptographic module, for which support of multiple threshold cryptographic schemes can be implemented in form of plugins. 
+This layer supports threshold cryptography through the threshold cryptographic module, for which support of multiple threshold cryptographic schemes can be implemented in form of plugins.
 
 ==== Application layer
 The application layer represents any application that make uses of modules provided in the crypto-primitive layer. For example, Mozilla's Thunderbird represents an application that relies on the crypto-primitive layer.
 
+
+=== Security analysis
+Security analysis of the Confium framework will be performed in two ways:
+
+* theoretical analysis; and
+* empirical studies.
+
+Theoretical analysis is usually a security proof with regards to an attack model. The attack models will be formulated, and with analysis performed after that.
+
+In addition, security analysis on the impacts of side-channel attacks <<standaert>> will be done. Side-channel attacks refer to the attacks based on implementation of the algorithms, e.g., the time and power consumed to perform a cryptographic action can be used to derive certain information about the private keys in some scenarios. There are many side-channel attacks in practice. We will evaluate the threats of these attacks theoretically and empirically.
+
+A technical report about the results of our empirical study will be delivered.
+
+== Crypto-primitive layer
+
 === Modular extension of cryptographic schemes
 
-==== Purpose
+==== General
 The Confium framework provides a mechanism of identifying and facilitating reuse of cryptographic schemes. By allowing potential multiplexing and adoption of multiple cryptographic libraries, authors of cryptographic scheme modules can be free from fear of an updated underlying cryptographic library accidentally breaking compatibility.
 
 ==== Reuse of cryptographic components
@@ -226,15 +252,60 @@ The relationship between cryptographic schemes can be considered as follows. Tak
 ==== Interface isolation for applications
 Cryptographic schemes are considered to be in the same family where they share characteristic properties, e.g., searchable encryption, threshold cryptography. A common interface can be generalized from the majority of the schemes in the family. By sharing a common programming interface, an application can be developed to bind to such interface without specifying the concrete cryptographic schemes. This promotes isolation between implementation of cryptographic scheme and the application, providing a customizable option to the user, and this decoupling frees up the application's focus on application logic.
 
-==== Identification and organization of cryptographic schemes
+=== Plugin types
+
+==== General
+There are two types of cryptographic primitive plugins in Confium:
+
+. Cryptographic module that implements one or more cryptographic schemes;
+. Cryptographic interface that allows one or more cryptographic schemes to act upon it.
+
+==== Cryptographic scheme module
+
+A cryptographic scheme module contains implementations of one or more cryptographic schemes
+that belong to a cryptographic scheme family. Users (applications) can utilize these
+cryptographic schemes via the Confium API.
+
+[example]
+In Confium, "`RSA`" would be a cryptographic scheme module. A user may use RSA to encrypt, decrypt or sign a message.
+
+[example]
+"`Threshold RSA`" <<shoup>> is another module that extends RSA. It inherits part of the implementation in the RSA module.
+
+[example]
+The "`Threshold signature scheme #1`" component in <<fig-02-keystore-architecture>>
+is provided by a cryptographic scheme module.
+
+
+==== Cryptographic family interface
+
+A cryptographic family interface provides a generalized interface of cryptographic schemes of the same family.
+This interface is not complete, meaning that a user cannot simply use this interface to run an application without
+corresponding cryptographic scheme modules.
+
+[example]
+The threshold signature scheme is a standard interface.
+
+On the other hand, this interface provides direct support to schemes, such as in facilitating
+handshake procedures for interactive cryptographic schemes.
+
+[example]
+The threshold RSA module can also extend the threshold signature scheme interface. The implemented procedure in the threshold signature interface can be inherited to the threshold RSA module.
+
+
+=== Identification and organization of cryptographic schemes
 Object-oriented programming (OOP) is a paradigm well understood by cryptographic engineers and developers alike. The relationships demonstrated above indicate that the connection between the threshold RSA and vanilla RSA can be considered fitting in the OOP model, allowing effective sharing of code, cutting down redundancy as well as re-implementation risks.
 
 The Confium framework identifies each cryptographic scheme module by a package name and version. Dependencies between cryptographic schemes are explicitly declared.
 
 In addition, Confium provides a Foreign Function Interface (FFI) allowing multiple programming languages to utilize its core. This enables cryptographers to easily prototype cryptographic algorithms using higher-level languages, and when the algorithm moves into production, providing them the ability to use another language with better optimizations.
 
-==== Example and diagram
+[example]
+A fictitious RSA-derived cryptographic scheme is demonstrated
+to be written as a Confium module in prototype stage in Ruby (see <<sample-code-ruby>>),
+and in production stage in C++ (see <<sample-code-c>>).
 
+[[sample-code-ruby]]
 .Sample code implementing a RSA-derived scheme in Ruby
 [source,ruby]
 ----
@@ -245,12 +316,13 @@ class ClownRsa::Key
   def generate
     process OpenSSL::RSA.generate_key
   end
-  
+
   def sign(data)
     ...
 ----
 
 
+[[sample-code-c]]
 .Sample code implementing a RSA-derived scheme in C++
 [source,c]
 ----
@@ -265,21 +337,121 @@ namespace ClownRSA {
       return OpenSSL::RSA_generate_key(kBits, kExp, 0, 0);
 ----
 
+Dependency declarations in Confium modules decouple the cryptographic scheme
+from the underlying cryptographic primitives. An example illustrating this
+concept is shown in <<fig-08-library-versioning>>.
 
 [[fig-08-library-versioning]]
 .Example of cryptographic scheme versions and versioned dependencies
 image::08-library-versioning.png[]
 
 
-===	Security requirements
+=== Third-party modules
+Modules in the crypto-primitive layer are developed by different developers. The layer here needs to provide a general enough model specification for developers to follow. The model allows the developer to declare a new module or interface that conforms to our framework.
 
-====	Keystore layer
+An ideal model is that the developers only need to focus on implementation of the cryptographic schemes and the keystore framework will take care the rest, e.g., secure key storage, authentication procedures. However, the framework cannot understand all the details of the modules automatically, e.g., the access control policy required by the module on each private parameter. Some settings are delegated to the module developer.
 
-=====	General
+In the initial Confium model, the developer needs to declare the access policy of each private parameter from our three available policies:
+
+* private;
+* protected; and
+* public.
+
+The model here requires balance between two factors: control and focus. While expanded setting values could provide developers with finer control, it would also place burden on them in careful selection of those settings.
+
+[[fig-06-extensible-interface]]
+.Differentiated treatment of core and non-core schemes
+image::06-extensible-interface.png[]
+
+Developers may be distracted from the core implementation of the module. It is not developer friendly if there are too many available settings. There are in general three ways to handle the design on the settings
+
+. the setting is compulsory;
+. the setting is available but optional. A default option is used if it is not specified by the developer; or
+. there is no setting, and all are forced to use the default setting.
+
+In order to achieve a good balance between control and focus, our team will communicate with people from the industry, e.g., the developers in Thunderbird, to refine our model. There are many design issues in this model, e.g., the format of module identifier, the way to declare inheritance. These issues are trivial but are time-consuming to get a common consent from people in the industry.
+
+
+=== Threshold cryptography
+Confium aims to support new cryptographic families and threshold cryptography is one of them. The threshold cryptography module is implemented in Confium's crypto-primitive layer, where threshold algorithms could:
+
+. depend on existing cryptographic algorithms for calculations, such as threshold RSA to RSA
+. have access its own private keystore, and the public keystore of the Confium keystore layer
+. have access to hardware modules exposed by Confium
+. access network interfaces if the scheme is an interactive one.
+
+[[fig-11-tc-module]]
+.Threshold cryptography module in Confium
+image::11-tc-module.png[]
+
+
+=== Security requirements
+It is the module developer's responsibility to make sure an implemented module is secure, e.g., by configuring the visibility of parameters properly according to the initial model described above.
+
+We assume the implementation of any module can be open source. Confidentiality of implementation is not a concern, but integrity of the implementation is of major concern -- malicious modifications of the module's source code can lead to leakage of private parameters. Cryptographic hashing <<steinberger>> can be used for integrity verification prior to execution.
+
+
+== Keystore layer
+
+=== General
+
+The keystore is compartmentalized for every separate cryptographic scheme, associated to the combination of module and application identifiers.
+
+=== Private keystore
+A module in a particular application can freely put and get keys in its private space.
+
+In order to support micro-management of access to individual keys, each individual private key can be associated to the combination of module identifier and a key identifier provided by the application. Only when the module identifier and key identifier matches, the private key can be retrieved.
+
+[[fig-08-tc-secrets]]
+.Plugins can only access their own secrets
+image::08-tc-secrets.png[]
+
+
+The keystore has its own master key to encrypt and sign the contents in the keystore. This is to ensure an attacker cannot bypass the keystore to obtain or modify the plain data in it. This algorithm is to generate the master key of the keystore and depends on which encryption and signature schemes are used.
+
+The trust store keeps plugin keys contained and secure via the plugin API:
+
+. Plugin and trust store generates a secret key `SK` known to both
+. Trust store returns challenge on request of key
+.. `challenge = keyRequest(keyId, pluginId)`
+.. Each key (or parameter) is associated with the `keyId` and `pluginId`
+. `key = keyResponse(respond)`
+
+
+[[fig-09-plugin-keys]]
+.Trust store keeps plugin keys contained and secure via the plugin API
+image::09-plugin-keys.png[]
+
+
+=== Public keystore
+In public key cryptographic schemes, the public key is supposed to be known by other parties. This is an important part of the keystore as it has been a challenging task to ship one's public key to another via the Internet. A typical man-in-the-middle attack is practical in many scenarios to let one obtain a forged public key and so the rest of the cryptographic scheme fails.
+
+To address this challenge, there is a public keystore in the keystore layer, that facilitates distribution of public keys. An identity-based signature scheme <<hu-lu>> is used, where the public key in identity-based schemes is the user's unique information, such as the email address. To upload a new public key, the identity and its signature are also provided to the public space. A key-value store database can be used to store the parameters and provide efficient search in large number of parameters.
+
+
+=== Plugins
+
+Keys of different types have different properties and attributes, and
+are stored in the keystore layer via keystore plugins for extensibility.
+
+[example]
+In <<fig-08-tc-secrets>>, "`RSA keys`", "`ECC keys`" and "`TC key share`"
+represent keys stored via different keystore plugins.
+
+
+=== Access control
+
+Attribute-based encryption <<xu-li-dai>> can be incorporated to support complex access policy based on the attributes set on the data items and the users. Our framework also limits on whether a specific procedure can be executed with five levels of trust settings. Note that the procedure can also be executed outside the framework as the module in cryptographic layer is usually open source.
+
+We use access control on private data in the keystore to enforce the execution policy. Private parameters can be obtained only when the all the trust settings of all parameters are satisfied. The procedure cannot be run if some parameters are not obtained. Thus, the problem of enforcing execution policy is transformed to the problem of access control on private data, which can be handled by access control techniques.
+
+=== Security requirements
+
+==== General
 The keystore layer provides helper procedures to store and retrieve parameters securely. Generally speaking, there are two aspects of security that the framework needs to cater for: confidentiality and integrity.
 
-===== Confidentiality
-Each module in the crypto-primitive layer has a private space in the keystore for keeping the private parameters. The extending module extending a parent module may have access to certain data or procedures of the parent module. 
+==== Confidentiality
+Each module in the crypto-primitive layer has a private space in the keystore for keeping the private parameters. The extending module extending a parent module may have access to certain data or procedures of the parent module.
 
 The framework provides three levels of visibility:
 
@@ -287,7 +459,7 @@ The framework provides three levels of visibility:
 . protected: the module and its extending modules can access; and
 . public: there is no restriction on the access.
 
-===== Integrity
+==== Integrity
 The framework needs to ensure private data stored inside the keystore cannot be modified by outside parties without detection.
 
 This can be achieved using signature schemes; but module dependencies may render signature verification is not straightforward.
@@ -304,115 +476,43 @@ Our initial framework provides five levels of trust that can be declared by the 
 . relative: parameters that are signed by the module, its ancestors or descendants can be used; and
 . public: no verification on the parameter is required. If one of the parameters of the procedure does not match the declared level, the procedure is not executed.
 
-==== Security requirements of the crypto-primitive layer
-It is the module developer's responsibility to make sure an implemented module is secure, e.g., by configuring the visibility of parameters properly according to the initial model described above. 
 
-We assume the implementation of any module can be open source. Confidentiality of implementation is not a concern, but integrity of the implementation is of major concern -- malicious modifications of the module's source code can lead to leakage of private parameters. Cryptographic hashing [22] can be used for integrity verification prior to execution.
+== Public module repository
 
-==== Security requirements of the public module repository
-The public module repository in our framework is responsible for providing a list of available modules and their authenticity information. The repository is decentralized in nature in our initial model such that it is not dependent on a single party. Authentication of the history of changes to the repository, i.e., adding, updating or removing modules, can be done using the blockchain technique <<tex-scha>>.
+=== General
+The public module repository is the counterpart to Confium just like how <<CTAN>> and <<CPAN>> are module repositories for LaTeX and Perl.
 
+Installation of modules must be a direct choice of the user.
 
-=== Algorithms in the keystore layer
-The keystore is compartmentalized for every separate cryptographic scheme, associated to the combination of module and application identifiers.
-
-==== Private keystore
-A module in a particular application can freely put and get keys in its private space. 
-
-In order to support micro-management of access to individual keys, each individual private key can be associated to the combination of module identifier and a key identifier provided by the application. Only when the module identifier and key identifier matches, the private key can be retrieved.
-
-[[fig-08-tc-secrets]]
-.Plugins can only access their own secrets
-image::08-tc-secrets.png[]
-
-
-The keystore has its own master key to encrypt and sign the contents in the keystore. This is to ensure an attacker cannot bypass the keystore to obtain or modify the plain data in it. This algorithm is to generate the master key of the keystore and depends on which encryption and signature schemes are used.
-
-The trust store keeps plugin keys contained and secure via the plugin API:
-
-. Plugin and trust store generates a secret key SK known to both
-. Trust store returns challenge on request of key
-.. _challenge = keyRequest(keyId, pluginId)_
-.. Each key (or parameter) is associated with the _keyId_ and _pluginId_
-. _key = keyResponse(respond)_
-
-
-[[fig-09-plugin-keys]]
-.Trust store keeps plugin keys contained and secure via the plugin API
-image::09-plugin-keys.png[]
-
-
-==== Public keystore
-In public key cryptographic schemes, the public key is supposed to be known by other parties. This is an important part of the keystore as it has been a challenging task to ship one's public key to another via the Internet. A typical man-in-the-middle attack is practical in many scenarios to let one obtain a forged public key and so the rest of the cryptographic scheme fails.
-
-To address this challenge, there is a public keystore in the keystore layer, that facilitates distribution of public keys. An identity-based signature scheme <<hu-lu>> is used, where the public key in identity-based schemes is the user's unique information, such as the email address. To upload a new public key, the identity and its signature are also provided to the public space. A key-value store database can be used to store the parameters and provide efficient search in large number of parameters.
-
-==== Access control checking
-Attribute-based encryption <<xu-li-dai>> can be incorporated to support complex access policy based on the attributes set on the data items and the users. Our framework also limits on whether a specific procedure can be executed with five levels of trust settings. Note that the procedure can also be executed outside the framework as the module in cryptographic layer is usually open source. 
-
-We use access control on private data in the keystore to enforce the execution policy. Private parameters can be obtained only when the all the trust settings of all parameters are satisfied. The procedure cannot be run if some parameters are not obtained. Thus, the problem of enforcing execution policy is transformed to the problem of access control on private data, which can be handled by access control techniques.
-
-=== Crypto-primitive layer
-
-==== Third-party modules
-Modules in the crypto-primitive layer are developed by different developers. The layer here needs to provide a general enough model specification for developers to follow. The model allows the developer to declare a new module or interface that conforms to our framework. 
-
-An ideal model is that the developers only need to focus on implementation of the cryptographic schemes and the keystore framework will take care the rest, e.g., secure key storage, authentication procedures. However, the framework cannot understand all the details of the modules automatically, e.g., the access control policy required by the module on each private parameter. Some settings are delegated to the module developer. For example, in our initial model, the developer needs to declare the access policy of each private parameter from our three available policies: private, protected, and public. The model here needs to balance between two factors: control and focus. If there are more settings, the developers can gain more control but on the other hand need to put more efforts on the settings.
-
-[[fig-06-extensible-interface]]
-.Differentiated treatment of core and non-core schemes
-image::06-extensible-interface.png[]
-
-Developers may be distracted from the core implementation of the module. It is not developer friendly if there are too many available settings. There are in general three ways to handle the design on the settings
-
-. the setting is compulsory; 
-. the setting is available but optional. A default option is used if it is not specified by the developer; or
-. there is no setting, and all are forced to use the default setting.
-
-In order to achieve a good balance between control and focus, our team will communicate with people from the industry, e.g., the developers in Thunderbird, to refine our model. There are many design issues in this model, e.g., the format of module identifier, the way to declare inheritance. These issues are trivial but are time-consuming to get a common consent from people in the industry.
-
-
-==== Public module repository
-The public module repository is the counterpart to Confium just like how CTAN and CPAN are module repositories for LaTeX and Perl.
-
-Installation of modules must be a direct choice of the user. 
-
-Consider the example in an email client. When a user receives an email with a signature signed by a module that is not yet installed on the user's computer, the user needs to find and install this module in order to verify the signature. 
+Consider the example in an email client. When a user receives an email with a signature signed by a module that is not yet installed on the user's computer, the user needs to find and install this module in order to verify the signature.
 
 The typical user may not know where and how to find and install such module. The public module repository can automate this search and install process.
 
-When the application sees that it requires a particular module, it can connect to the module repository and download and install the module automatically after the user permits the action. 
+When the application sees that it requires a particular module, it can connect to the module repository and download and install the module automatically after the user permits the action.
 
 The repository must enforce careful authentication to prevent malicious parties from modifying existing modules. This can be done by:
 
-* integrating signature mechanism into the repository management mechanism
-* certification of modules with code-signing certificates and reviews. 
+* integrating signatures into the repository management mechanism
+* certification of modules with code-signing certificates and reviews.
 
 
-=== Threshold cryptography
-Confium aims to support new cryptographic families and threshold cryptography is one of them. The threshold cryptography module is implemented in Confium's crypto-primitive layer, where threshold algorithms could:
-
-. depend on existing cryptographic algorithms for calculations, such as threshold RSA to RSA
-. have access its own private keystore, and the public keystore of the Confium keystore layer
-. have access to hardware modules exposed by Confium
-. access network interfaces if the scheme is an interactive one.
-
-[[fig-11-tc-module]]
-.Threshold cryptography module in Confium
-image::11-tc-module.png[]
+=== Security requirements
+The public module repository in our framework is responsible for providing a list of available modules and their authenticity information. The repository is decentralized in nature in our initial model such that it is not dependent on a single party. Authentication of the history of changes to the repository, i.e., adding, updating or removing modules, can be done using the blockchain technique <<tex-scha>>.
 
 
-== Confium supports the NIST threshold cryptography project
-As developers of Confium, we strongly commend and fully support NIST's effort in the standardization of threshold cryptography. 
+== Confium offers support to the NIST threshold cryptography project
+As developers of Confium, we strongly commend and fully support NIST's effort in the standardization of threshold cryptography.
 
 We believe that the goals of Confium fully support and align with the current standardization efforts, especially in the areas of:
 
-* Providing a common platform for cryptographers to develop prototype to production algorithms and schemes
-* Allows cryptographic testing in a sandbox to real-world deployment
-* Makes assessment easier by providing a level-playing field
-* Potentially common primitives (e.g. networking) allows better focus on what's important
+. Providing a common platform for cryptographers to develop prototype to production algorithms and schemes;
+. Providing basic infrastructure primitives commonly used in threshold cryptography (e.g. networking code);
+. Allows cryptographic testing in a sandbox to real-world deployment;
+. Makes assessment easier by providing a level-playing field.
 
-*We would like to contribute effort in providing Confium to NIST as an open-source implementation test-bed for threshold cryptographic schemes, and are willing to work with NIST in ensuring that the test-bed meets the requirements set by NIST.*
+*We would like to contribute effort in providing Confium to NIST as an open-source implementation test-bed for threshold cryptographic schemes.*
+
+*Specifically, we are willing to work with NIST in ensuring that the test-bed meets the requirements set by NIST.*
 
 *As a gesture of commitment, Confium will implement a proof of concept to demonstrate the capabilities of the test-bed. It will be a 2-out-of-3 threshold RSA signature scheme, where the secret key is shared across 3 parties, and any pair of them is able to sign or decrypt, but without the secret key ever being recombined.*
 
@@ -420,18 +520,23 @@ We believe that the goals of Confium fully support and align with the current st
 == Confium feedback to NIST 8214A
 
 === Threshold cryptography benefits to OpenPGP
-The following clauses refer to Appendix A of NIST 8214A (Draft).
+The following clauses refer to Appendix A of <<NISTIR_8214A>>.
 
-. Threshold cryptography could help store OpenPGP secrets in multiple shares, allowing the private keys to be recoverable. (A.2 Protection of secrets at rest)
-. An OpenPGP identity key can be stored in multiple shares such that only when multiple factors are provided the key could be used (`A.3 Confidential communication`)
-. An OpenPGP identity key can be distributed across secure environments (A.6 Distribution of trust across secure environments)
+. Threshold cryptography could help store OpenPGP secrets in multiple shares, allowing the private keys to be recoverable. ("`A.2 Protection of secrets at rest`")
 
-As an example of `2)`, a user may want to keep the private key in 3 shares (iCloud keychain, computer, Yubikey), where 2 must be present to utilize it. This would allow the user to recover the key even if the computer is lost, but the iCloud keychain and Yubikey are still present.
+. [[multiple-shares]] An OpenPGP identity key can be stored in multiple shares such that only when multiple factors are provided the key could be used ("`A.3 Confidential communication`") +
++
+[example]
+A user may want to keep the private key in 3 shares (iCloud keychain, computer, USB key), where all 3 must be present to utilize it for multiple-factor authentication.
 
-The user could also change the scheme to have 4 portions where 2 must be present, with the ability to store an extra share in another USB key which is stored in a safe to enable recovery in case 2 of the 3 existing factors are lost.
+. An OpenPGP identity key can be distributed across secure environments ("`A.6 Distribution of trust across secure environments`") +
++
+[example]
+The user could keep an identity key across 3 shares where 2 must be present. This would allow the user to recover the key even if the computer is lost, but the iCloud keychain and USB key are still present.
 
-=== Alignment to NISTIR 8214A <<fig-02-keystore-architecture>> cryptographic modes
-The following sections demonstrate how the Confium architecture aligns to the threshold cryptographic modes listed in NIST 8214A <<fig-02-keystore-architecture>>.
+
+=== Alignment to NISTIR 8214A Figure 2 cryptographic modes
+The following sections demonstrate how the Confium architecture aligns to the threshold cryptographic modes listed in <<NISTIR_8214A>> Figure 2.
 
 In the following diagrams:
 
@@ -440,61 +545,48 @@ In the following diagrams:
 . A plugin interface and a manager for managing and interacting with user-installed plugins (e.g., registration of new plugin)
 
 
-
-
 ==== Conventional
 
 [[fig-10-mode-a]]
-.Mode (a)
+.NISTIR 8214A Figure 2 mode (a) alignment
 image::10-mode-a.png[]
 
 
 ==== Not-shared-IO
 
 [[fig-10-mode-b-1]]
-.Mode (b)(i) Component not storing keys in Confium
+.NISTIR 8214A Figure 2 mode (b), alignment (i): Component not storing keys in Confium
 image::10-mode-b-1.png[]
 
 [[fig-10-mode-b-2]]
-.Mode (b)(i) Component storing keys in Confium
+.NISTIR 8214A Figure 2 mode (b), alignment (ii): Component storing keys in Confium
 image::10-mode-b-2.png[]
 
 
 ==== Shared-IO
 
 [[fig-10-mode-c]]
-.Mode (d)
+.NISTIR 8214A Figure 2 mode (d) alignment
 image::10-mode-c.png[]
 
 
 ==== Shared-I
 
 [[fig-10-mode-d]]
-.Mode (d)
+.NISTIR 8214A Figure 2 mode (d) alignment
 image::10-mode-d.png[]
 
 
 ==== Shared-O
 
 [[fig-10-mode-e]]
-.Mode (e)
+.NISTIR 8214A Figure 2 mode (e) alignment
 image::10-mode-e.png[]
 
 
-== Security analysis
-We plan to perform security analysis of the Confium framework in two ways:
+== Supplementary information
 
-* theoretical analysis; and
-* empirical studies.
-
-Theoretical analysis is usually a security proof with regards to an attack model. The attack models will be formulated, and with analysis performed after that. 
-
-In addition, security analysis on the impacts of side-channel attacks [21] will be done. Side-channel attacks refer to the attacks based on implementation of the algorithms, e.g., the time and power consumed to perform a cryptographic action can be used to derive certain information about the private keys in some scenarios. There are many side-channel attacks in practice. We will evaluate the threats of these attacks theoretically and empirically. 
-
-A technical report about the results of our empirical study will be delivered.
-
-
-== Development approach
+=== Development approach of Confium
 Ribose is strongly committed to open source development, and the development approach of Confium adheres to the following principles:
 
 . Community-driven requirements
@@ -502,49 +594,60 @@ Ribose is strongly committed to open source development, and the development app
 . Co-pilot development
 . Iterative delivery
 
-=== Community-driven requirements
+==== Community-driven requirements
 The intended user community of Confium will drive the implementation requirements of Confium. This community includes application developers that depend on Confium, such as Mozilla Thunderbird, cryptographers of threshold cryptography schemes, as well as other stakeholders.
 
 Requirements and feedback for implementation will be solicited and clarifications sought from this community, ensuring that the resulting deliverable meets stakeholder expectations and their goals.
 
-=== Open feedback and discussion
+==== Open feedback and discussion
 Discussion and feedback for the Confium framework will be performed in public to ensure requirements and any changes to reach as many pairs of eyes as possible to ensure quality and appropriateness.
 
-=== Co-pilot development
+==== Co-pilot development
 Confium is developed from scratch as open source software but with development mainly the responsibility of Ribose engineers. The implementation will adopt a co-pilot model allowing a smaller group of key stakeholders to prioritize necessary functionality. The co-pilots here are intended to be Mozilla and NIST.
 
-=== Iterative delivery
+==== Iterative delivery
 Confium's iterative development approach produces continuously functional deliverables that are improved iteratively. This allows early adopters to engage early and interact with new functionality to ensure they meet the expectations of cryptographers and application developers who use Confium.
 
 
-== Information about Ribose
+=== Information about Ribose
 
-=== General
+==== General
 Ribose Group Inc. (BVI, with its wholly owned subsidiary, Ribose Inc., based in Delaware) is a pioneer of interoperable and cybersecurity technologies across user-centric systems and applications. It has been named a Deloitte Technology FAST 20 Rising Star and Red Herring Global 100 company, and has received CSA's Enterprise Award for Security Innovation of the Year.
 
-Ribose is the world's first organization to be certified to the NIST Cybersecurity Framework by BSI, with its experience presented at the inaugural NIST Risk Management Conference in 2018. 
+Ribose is the world's first organization to be certified to the NIST Cybersecurity Framework by BSI, with its experience presented at the inaugural NIST Risk Management Conference in 2018.
 
-Ribose is certified by BSI to ISO/IEC 27001, ISO/IEC 27017, ISO/IEC 27018 and ISO/IEC 27701, ISO/IEC 22301, ISO/IEC 20000-1, ISO 9001, CSA STAR Certification, amongst other schemes.
+Ribose is certified by BSI to <<ISO-IEC_27001>>, <<ISO-IEC_27017>>, <<ISO-IEC_27018>> and <<ISO-IEC_27701>>, <<ISO-IEC_22301>>, <<ISO-IEC_20000-1>>, <<ISO_9001>>, CSA STAR Certification, amongst other schemes.
 
-=== Experience with NIST
-Ribose is the world's first organization to be certified to the NIST Cybersecurity Framework by BSI, with its experience presented at the inaugural NIST Risk Management Conference in 2018. 
+==== Experience with NIST
+Ribose is the world's first organization to be certified to the NIST Cybersecurity Framework by BSI, with its experience presented at the inaugural NIST Risk Management Conference in 2018.
 
 Ribose's Metanorma framework is currently being piloted by NIST's Computer Security Division for the publication of the Special Publications 800 series and Cybersecurity Whitepaper documents.
 
 Ribose has contributed to NIST's "`Publication Identifier Syntax`" initiative and currently assists NIST's DLMF LaTeXML project in maintaining their official Snap and Homebrew packages.
 
-=== Commitment to open source and open standards
+==== Commitment to open source and open standards
 Ribose operates the official Geodetic Registry for ISO (ISO 19127) that powers transformations between international geodetic models used by global navigation satellite systems.
 
 Metanorma is Ribose's semantic standardization document system. Parts of the framework is being standardized at ISO as ISO 36100, ISO 36200 and ISO 36300. Metanorma is used by a number of international standardization bodies in publishing their standards, including ITU-T, ITU-D, OGC and CalConnect, accepted by IETF, ISO and IEC, and is currently being piloted by NIST's Computer Security Division and the United Nations Innovation Lab.
 
 Relaton is Ribose's framework for interoperable citations, providing bibliographic information from standard development bodies including NIST, ISO, IEC, ITU, IETF amongst others. Relaton also powers CalConnect's Standards Repository forms an integral part of Metanorma.
 
-Coulomb is Ribose's desktop application framework for editing structured data, currently in used by ITU to publish its Operational Bulletin. Glossarist and Geolexica, Ribose's terminology management client and server frameworks, are used by ISO TC 211, OSGeo to manage official terminology. 
+Coulomb is Ribose's desktop application framework for editing structured data, currently in used by ITU to publish its Operational Bulletin. Glossarist and Geolexica, Ribose's terminology management client and server frameworks, are used by ISO TC 211, OSGeo to manage official terminology.
 
 
 [bibliography]
 == Bibliography
+
+* [[[ISO_8000,ISO 8000 (all parts)]]], _AUTOFILL_
+
+* [[[ISO-IEC_27000,ISO/IEC 27000]]], _AUTOFILL_
+* [[[ISO-IEC_27001,ISO/IEC 27001]]], _AUTOFILL_
+* [[[ISO-IEC_27017,ISO/IEC 27017]]], _AUTOFILL_
+* [[[ISO-IEC_27018,ISO/IEC 27018]]], _AUTOFILL_
+* [[[ISO-IEC_27701,ISO/IEC 27701]]], _AUTOFILL_
+* [[[ISO-IEC_22301,ISO/IEC 22301]]], _AUTOFILL_
+* [[[ISO-IEC_20000-1,ISO/IEC 20000-1]]], _AUTOFILL_
+* [[[ISO_9001,ISO 9001]]], _AUTOFILL_
 
 * [[[boheh-boyen,1]]], _D. Boneh, X. Boyen, and S. Halevi. Chosen ciphertext secure public key threshold encryption without random oracles. In CT-RSA, 2006._
 
@@ -580,6 +683,10 @@ Coulomb is Ribose's desktop application framework for editing structured data, c
 
 * [[[yan-lu-liu,17]]], _X. Yan, Y. Lu, L. Liu, S. Wan, W. Ding, and H. Liu. Chinese remainder theorem-based secret image sharing for (k, n) threshold. In ICCCS, 2017._
 
+* [[[standaert,18]]], _F. Standaert, T. Malkin, and M. Yung. A unified framework for the analysis of side-channel key recovery attacks. In EUROCRYPT, 2009._
 
+* [[[steinberger,19]]], _J. P. Steinberger. The collision intractability of MDC-2 in the ideal-cipher model. In EUROCRYPT, 2007._
 
+* [[[CTAN,CTAN]]], _The Comprehensive TEX Archive Network_, https://ctan.org.
 
+* [[[CPAN,CPAN]]], _Comprehensive Perl Archive Network_, https://www.cpan.org.

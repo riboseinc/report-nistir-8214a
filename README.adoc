@@ -1,42 +1,19 @@
-= Ribose open documents
-
-//image:https://github.com/metanorma/mn-samples-itu/workflows/publish/badge.svg["Build Status", link="https://github.com/metanorma/mn-samples-itu/actions?workflow=publish"]
+= Ribose comments to NISTIR 8214A
 
 == Purpose
 
-This repository provides Metanorma-ITU documents in sample form.
-
-== Access
-
-Documents in this repository are available through the deployed mini-site:
-
-* https://metanorma.github.io/mn-samples-itu/[Metanorma-ITU documents]
+Comments to NISTIR 8214A.
 
 
+== Usage
 
-== References for authoring Metanorma ITU documents
+[source,sh]
+----
+bundle exec metanorma site generate
+open site/index.html
+----
 
-This repository also contains references relating to authoring ITU documents, including:
 
-Authoring (`references/authoring/`)
+== License
 
-* ITU-T: Author's Guide for drafting ITU-T Recommendations
-* ITU-T: Recommendation skeleton
-* ITU-R: Format of ITU-R Recommendations
-
-ITU-T Recommendation samples (`references/itu-t/`)
-
-* One document from every ITU-T "Serie" (e.g. A)
-* Within the collection the various types of recommendations are included, such as:
-** "Recommendation"
-** "Amendment"
-** "Corrigendum"
-** "Errata"
-
-NOTE: These documents are publicly available on https://www.itu.int/en/ITU-T/publications/Pages/recs.aspx[ITU-T]
-
-ITU-R Recommendation samples (`references/itu-t/`)
-
-* One sample document for BO, BR, RA, and S.
-
-NOTE: These documents are publicly available on https://www.itu.int/pub/R-REC[ITU-R]
+Copyright Ribose 2020.
